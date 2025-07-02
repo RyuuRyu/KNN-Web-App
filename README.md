@@ -26,4 +26,4 @@ K-Nearest Neighbors (KNN) is a non-parametric, supervised machine learning algor
 - Clone the Repository using  `git clone`
 - Go to the project's directory
 - train the model by running the `./train_model.py`
-- After that, run the Web Browser view by running the `App.py`
+- After that, run the Web Browser view by running the `app.py`
