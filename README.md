@@ -1,7 +1,7 @@
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://www.python.org/static/img/python-logo.png" width="400" alt="Laravel Logo"></a></p>
 
 # About This Project
-This is Python based Machine Learning Model using K-Nearest Neighbors Algorithm for predicting college student's graduation based on their attendance, assignments and exams scores, and their GPA.
+This is [Python](https://en.wikipedia.org/wiki/Python_(programming_language)) based [Machine Learning](https://en.wikipedia.org/wiki/Machine_learning#:~:text=Machine%20learning%20(ML)%20is%20a,perform%20tasks%20without%20explicit%20instructions.) Model using [K-Nearest Neighbors Algorithm](https://en.wikipedia.org/wiki/K-nearest_neighbors_algorithm) for predicting college student's graduation based on their attendance, assignments and exams scores, and their GPA.
 I made this for a subject for my 6th Semester scientific papers.
 
 ## Python
