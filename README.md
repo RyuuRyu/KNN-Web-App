@@ -2,7 +2,7 @@
 
 # About this Project
 This is Python based Machine Learning Model using K-Nearest Neighbors Algorithm for predicting college student's graduation based on their attendance, assignments and exams scores, and their GPA.
-I made as an object of my 6th Semester scientific papers.
+I made this for a subject for my 6th Semester scientific papers.
 
 ## Python
 
