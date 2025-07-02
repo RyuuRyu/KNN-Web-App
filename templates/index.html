@@ -43,6 +43,10 @@
             padding: 50px;
             text-align: center;
         }
+
+        .result h3 {
+            text-align: center;
+        }
             
         .form h2, .result h3 {
             font-family: 'Geist Mono', monospace;
@@ -117,24 +121,12 @@
     <div class="result">
         {% if prediction %}
         <h3>Hasil: {{ prediction }}</h3>
-        {% if input_data %}
-            <div style="margin-top: 2rem;">
-                <h4>Data yang Dimasukkan:</h4>
-                <ul style="list-style: none; padding: 0;">
-                    <li>Nama: {{ input_data.nama }}</li>
-                    <li>Absensi: {{ input_data.absensi }}</li>
-                    <li>Tugas: {{ input_data.tugas }}</li>
-                    <li>UTS: {{ input_data.uts }}</li>
-                    <li>UAS: {{ input_data.uas }}</li>
-                    <li>IPK: {{ input_data.ipk }}</li>
-                </ul>
-            </div>
-        {% endif %}
         {% else %}
         <h3>Masukkan data untuk melihat hasil prediksi</h3>
         {% endif %}
-
-        <!-- Table of all predictions -->
+            
+        <!-- Table of all predictions, only show if there is data -->
+        {% if all_predictions|length > 0 %}
         <div style="margin-top: 2rem;">
             <h4>Riwayat Prediksi</h4>
             <table border="1" cellpadding="5" cellspacing="0" style="width:100%; border-collapse: collapse;">
@@ -149,7 +141,6 @@
                     <th>Hasil</th>
                 </tr>
                 </thead>
-
                 <tbody>
                 {% for row in all_predictions %}
                 <tr>
@@ -165,6 +156,7 @@
                 </tbody>
             </table>
         </div>
+        {% endif %}
     </div>
 
 </body>
