@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 import joblib
 import numpy as np
 from flask_sqlalchemy import SQLAlchemy
@@ -71,17 +71,7 @@ def predict():
         db.session.add(pred)
         db.session.commit()
 
-        input_data = {
-            'nama': nama,
-            'absensi': absensi,
-            'tugas': tugas,
-            'uts': uts,
-            'uas': uas,
-            'ipk': ipk
-        }
-
-        all_predictions = Prediction.query.all()
-        return render_template('index.html', prediction=result, input_data=input_data, all_predictions=all_predictions)
+        return redirect(url_for('index'))
     except Exception as e:
         all_predictions = Prediction.query.all()
         return render_template('index.html', prediction=f"Error: {e}", all_predictions=all_predictions)
