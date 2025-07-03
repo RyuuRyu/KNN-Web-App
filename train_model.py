@@ -15,7 +15,7 @@ df = pd.read_excel('data/Dataset IPK Mahasiswa.xlsx')
 
 # 2. Preprocessing Data
 # Tambahkan fitur baru: Standar Deviasi IPK, Tren IPK, dan Kemiringan Regresi
-df['STD_DEV_IPK'] = df[['SEMESTER 1', 'SEMESTER 2', 'SEMESTER 3', 'SEMESTER 4', 'SEMESTER 5', 'SEMESTER 6', 'SEMESTER 7']].std(axis=1)
+df['STDEV_IPK'] = df[['SEMESTER 1', 'SEMESTER 2', 'SEMESTER 3', 'SEMESTER 4', 'SEMESTER 5', 'SEMESTER 6', 'SEMESTER 7']].std(axis=1)
 df['TREND_IPK'] = df['SEMESTER 7'] - df['SEMESTER 1']
 
 # Hitung kemiringan regresi linier untuk setiap mahasiswa
@@ -35,11 +35,12 @@ weighted_ipk = df[ipk_columns].multiply(weights)
 df['WEIGHTED_AVG_IPK'] = weighted_ipk.sum(axis=1)
 
 # Memilih fitur (semua semester, std dev, tren, kemiringan, dan rata-rata tertimbang) dan target
-X = df[['SEMESTER 1', 'SEMESTER 2', 'SEMESTER 3', 'SEMESTER 4', 'SEMESTER 5', 'SEMESTER 6', 'SEMESTER 7', 'STD_DEV_IPK', 'TREND_IPK', 'SLOPE_IPK', 'WEIGHTED_AVG_IPK']]
+X = df[['SEMESTER 1', 'SEMESTER 2', 'SEMESTER 3', 'SEMESTER 4', 'SEMESTER 5', 'SEMESTER 6', 'SEMESTER 7', 'STDEV_IPK', 'TREND_IPK', 'SLOPE_IPK', 'WEIGHTED_AVG_IPK']]
 y = df['STATUS'].map({'LULUS': 1, 'TIDAK LULUS': 0})
 
 # Memeriksa dan menangani data yang hilang
-print("Jumlah nilai hilang per kolom:\n", X.isnull().sum())
+print("Jumlah nilai hilang per kolom:")
+print(X.isnull().sum())
 if X.isnull().sum().sum() > 0:
     df = df.fillna(df.mean())
 df = df.dropna()
@@ -50,7 +51,7 @@ print("Nilai unik RATA-RATA IPK:", df['RATA-RATA IPK'].unique())
 
 # 3. Exploratory Data Analysis (EDA)
 print("Dataset Preview:")
-print(df[['SEMESTER 1', 'SEMESTER 2', 'SEMESTER 3', 'SEMESTER 4', 'SEMESTER 5', 'SEMESTER 6', 'SEMESTER 7', 'STD_DEV_IPK', 'TREND_IPK', 'SLOPE_IPK', 'WEIGHTED_AVG_IPK', 'STATUS']].head())
+print(df[['SEMESTER 1', 'SEMESTER 2', 'SEMESTER 3', 'SEMESTER 4', 'SEMESTER 5', 'SEMESTER 6', 'SEMESTER 7', 'STDEV_IPK', 'TREND_IPK', 'SLOPE_IPK', 'WEIGHTED_AVG_IPK', 'STATUS']].head())
 print("\nDistribusi Status:")
 print(y.value_counts())
 
