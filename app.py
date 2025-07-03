@@ -1,80 +1,111 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, request, render_template, redirect, url_for
+import pandas as pd
 import joblib
 import numpy as np
-from flask_sqlalchemy import SQLAlchemy
+import sqlite3
 
 app = Flask(__name__)
 
-# Configure SQLite database
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///predictions.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
-
-# Database model
-class Prediction(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    nama = db.Column(db.String(100))
-    absensi = db.Column(db.Float)
-    tugas = db.Column(db.Float)
-    uts = db.Column(db.Float)
-    uas = db.Column(db.Float)
-    ipk = db.Column(db.Float)
-    result = db.Column(db.String(20))
-
-# Load model and scaler
-model = joblib.load('model/knn_model.pkl')
+knn_model = joblib.load('model/knn_model.pkl')
 scaler = joblib.load('model/scaler.pkl')
 
-# @app.before_first_request
-# def create_tables():
-#     db.create_all()
+DB_FILE = 'data/student_inputs.db'
 
-first_request = True
-@app.before_request
-def before_first_request():
-    global first_request
-    if first_request:
-        db.create_all()
-        first_request = False
+def init_db():
+    conn = sqlite3.connect(DB_FILE)
+    c = conn.cursor()
+    c.execute('''
+        CREATE TABLE IF NOT EXISTS inputs (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            semester1 REAL,
+            semester2 REAL,
+            semester3 REAL,
+            semester4 REAL,
+            semester5 REAL,
+            semester6 REAL,
+            semester7 REAL,
+            stddev REAL,
+            trend REAL,
+            slope REAL,
+            weighted_avg REAL,
+            prediction TEXT
+        )
+    ''')
+    conn.commit()
+    conn.close()
 
-@app.route('/')
-def index():
-    all_predictions = Prediction.query.all()
-    return render_template('index.html', all_predictions=all_predictions)
+init_db()
 
-@app.route('/predict', methods=['POST'])
-def predict():
-    try:
-        absensi = float(request.form['absensi'])
-        tugas = float(request.form['tugas'])
-        uts = float(request.form['uts'])
-        uas = float(request.form['uas'])
-        ipk = float(request.form['ipk'])
-        nama = request.form['nama']
+@app.route('/', methods=['GET', 'POST'])
+def home():
+    prediction = None
+    if request.method == 'POST':
+        semester1 = float(request.form['semester1'])
+        semester2 = float(request.form['semester2'])
+        semester3 = float(request.form['semester3'])
+        semester4 = float(request.form['semester4'])
+        semester5 = float(request.form['semester5'])
+        semester6 = float(request.form['semester6'])
+        semester7 = float(request.form['semester7'])
 
-        features = np.array([[absensi, tugas, uts, uas, ipk]])
-        features_scaled = scaler.transform(features)
-        prediction = model.predict(features_scaled)
+        # Calculate features
+        ipks = [semester1, semester2, semester3, semester4, semester5, semester6, semester7]
+        stddev = np.std(ipks)
+        trend = semester7 - semester1
 
-        result = "Lulus" if prediction[0] == 1 else "Tidak Lulus"
+        # Slope calculation (linear regression)
+        X = np.arange(7).reshape(-1, 1)
+        y = np.array(ipks).reshape(-1, 1)
+        from sklearn.linear_model import LinearRegression
+        model = LinearRegression()
+        model.fit(X, y)
+        slope = model.coef_[0][0]
+
+        # Weighted average
+        weights = [0.1, 0.1, 0.1, 0.1, 0.15, 0.2, 0.25]
+        weighted_avg = np.dot(ipks, weights)
+
+        # Prepare input for prediction (order must match training)
+        input_data = pd.DataFrame([[
+            semester1, semester2, semester3, semester4, semester5, semester6, semester7,
+            stddev, trend, slope, weighted_avg
+        ]], columns=[
+            'SEMESTER 1', 'SEMESTER 2', 'SEMESTER 3', 'SEMESTER 4',
+            'SEMESTER 5', 'SEMESTER 6', 'SEMESTER 7',
+            'STD_DEV_IPK', 'TREND_IPK', 'SLOPE_IPK', 'WEIGHTED_AVG_IPK'
+        ])
+        input_data_scaled = scaler.transform(input_data)
+
+        prediction_result = knn_model.predict(input_data_scaled)
+        status = 'LULUS' if prediction_result[0] == 1 else 'TIDAK LULUS'
+        prediction = f'Prediksi Status: {status}'
 
         # Save to database
-        pred = Prediction(
-            nama=nama,
-            absensi=absensi,
-            tugas=tugas,
-            uts=uts,
-            uas=uas,
-            ipk=ipk,
-            result=result
-        )
-        db.session.add(pred)
-        db.session.commit()
+        conn = sqlite3.connect(DB_FILE)
+        c = conn.cursor()
+        c.execute('''
+            INSERT INTO inputs (
+                semester1, semester2, semester3, semester4, semester5, semester6, semester7,
+                stddev, trend, slope, weighted_avg, prediction
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (semester1, semester2, semester3, semester4, semester5, semester6, semester7,
+              stddev, trend, slope, weighted_avg, status))
+        conn.commit()
+        conn.close()
+        return redirect(url_for('home'))
 
-        return redirect(url_for('index'))
-    except Exception as e:
-        all_predictions = Prediction.query.all()
-        return render_template('index.html', prediction=f"Error: {e}", all_predictions=all_predictions)
+    # Fetch all records for display
+    conn = sqlite3.connect(DB_FILE)
+    c = conn.cursor()
+    c.execute('''
+        SELECT semester1, semester2, semester3, semester4, semester5, semester6, semester7,
+               stddev, trend, slope, weighted_avg, prediction
+        FROM inputs
+    ''')
+    records = c.fetchall()
+    conn.close()
+
+    return render_template('index.html', prediction=prediction, records=records)
 
 if __name__ == '__main__':
     app.run(debug=True)

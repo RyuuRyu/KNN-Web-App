@@ -3,161 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <title>Prediksi Kelulusan Mahasiswa</title>
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Outfit:wght@100..900&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=Instrument+Sans:ital,wght@0,400..700;1,400..700&family=Outfit:wght@100..900&display=swap" rel="stylesheet">
-
     <style>
-        body {
-            font-family: 'instrument Sans', 'Outfit', sans-serif;
-            background-color: #f0f0f0;
-            margin: 0;
-        }
-        
-        .container {
-            display: flex;
-            gap: 50px;
-            justify-content: space-between;;
-            align-items: stretch; /* Make children fill container height */
-            width: 1700px;
-            height: 100vh;
-            margin: auto;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            background-color: #fff;
-            border-radius: 8px;
-        }
-
-        .form {
-            width: 500px;
-            min-width: 0;
-            box-sizing: border-box;
-            padding: 50px;
-        }
-
-        .result {
-            flex: 1;
-            min-width: 0;
-            box-sizing: border-box;
-            padding: 50px;
-            text-align: center;
-        }
-
-        .result h3 {
-            text-align: center;
-        }
-            
-        .form h2, .result h3 {
-            font-family: 'Geist Mono', monospace;
-        }
-
-        .form label {
-            font-weight: bold;
-        }
-
-        .form input[type="number"], .form input[type="text"] {
-            width: 100%;
-            padding: 10px;
-            margin: 5px 0 30px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-
-        .form button {
-            background-color: #007bff;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        .form button:hover {
-            background-color: #0056b3;
-        }
-        
-        .result {
-
-            height: 100%;
-            text-align: center;
-        }
-
-        .result h3 {
-            color: #333;
-        }
-        </style>
-
+        body { font-family: Arial, sans-serif; background: #f0f0f0; }
+        .container { width: 900px; margin: 40px auto; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); padding: 40px; }
+        .form { margin-bottom: 30px; }
+        .form label { font-weight: bold; }
+        .form input[type="number"] { width: 100%; padding: 8px; margin: 5px 0 20px; border: 1px solid #ccc; border-radius: 4px; }
+        .form button { background: #007bff; color: #fff; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; }
+        .form button:hover { background: #0056b3; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+        th { background: #f7f7f7; }
+        h2, h3, h4 { margin-top: 0; }
+    </style>
 </head>
 <body>
-
-    <div class="container">
+<div class="container">
     <div class="form">
-        <h2>Masukkan Data Mahasiswa</h2>
-        <form action="/predict" method="post">
-            <label>Nama:</label><br>
-            <input type="text" name="nama" required><br>
-
-            <label>Absensi:</label><br>
-            <input type="number" name="absensi" step="any" required><br>
-
-            <label>Tugas:</label><br>
-            <input type="number" name="tugas" step="any" required><br>
-
-            <label>UTS:</label><br>
-            <input type="number" name="uts" step="any" required><br>
-
-            <label>UAS:</label><br>
-            <input type="number" name="uas" step="any" required><br>
-
-            <label>IPK:</label><br>
-            <input type="number" name="ipk" step="any" required><br><br>
-
+        <h2>Masukkan Nilai IPK Semester 1-7</h2>
+        <form method="post" action="/">
+            <label>Semester 1:</label>
+            <input type="number" name="semester1" step="any" required>
+            <label>Semester 2:</label>
+            <input type="number" name="semester2" step="any" required>
+            <label>Semester 3:</label>
+            <input type="number" name="semester3" step="any" required>
+            <label>Semester 4:</label>
+            <input type="number" name="semester4" step="any" required>
+            <label>Semester 5:</label>
+            <input type="number" name="semester5" step="any" required>
+            <label>Semester 6:</label>
+            <input type="number" name="semester6" step="any" required>
+            <label>Semester 7:</label>
+            <input type="number" name="semester7" step="any" required>
             <button type="submit">Prediksi</button>
         </form>
     </div>
-
     <div class="result">
         {% if prediction %}
-        <h3>Hasil: {{ prediction }}</h3>
+            <h3>Hasil: {{ prediction }}</h3>
         {% else %}
-        <h3>Masukkan data untuk melihat hasil prediksi</h3>
+            <h3>Masukkan data untuk melihat hasil prediksi</h3>
         {% endif %}
-            
-        <!-- Table of all predictions, only show if there is data -->
-        {% if all_predictions|length > 0 %}
+
+        {% if records and records|length > 0 %}
         <div style="margin-top: 2rem;">
             <h4>Riwayat Prediksi</h4>
-            <table border="1" cellpadding="5" cellspacing="0" style="width:100%; border-collapse: collapse;">
+            <table>
                 <thead>
-                <tr>
-                    <th>Nama</th>
-                    <th>Absensi</th>
-                    <th>Tugas</th>
-                    <th>UTS</th>
-                    <th>UAS</th>
-                    <th>IPK</th>
-                    <th>Hasil</th>
-                </tr>
+                    <tr>
+                        <th>Semester 1</th>
+                        <th>Semester 2</th>
+                        <th>Semester 3</th>
+                        <th>Semester 4</th>
+                        <th>Semester 5</th>
+                        <th>Semester 6</th>
+                        <th>Semester 7</th>
+                        <th>STD DEV IPK</th>
+                        <th>Hasil</th>
+                    </tr>
                 </thead>
                 <tbody>
-                {% for row in all_predictions %}
-                <tr>
-                    <td>{{ row.nama }}</td>
-                    <td>{{ row.absensi }}</td>
-                    <td>{{ row.tugas }}</td>
-                    <td>{{ row.uts }}</td>
-                    <td>{{ row.uas }}</td>
-                    <td>{{ row.ipk }}</td>
-                    <td>{{ row.result }}</td>
-                </tr>
+                {% for row in records %}
+                    <tr>
+                        <td>{{ row[0] }}</td>
+                        <td>{{ row[1] }}</td>
+                        <td>{{ row[2] }}</td>
+                        <td>{{ row[3] }}</td>
+                        <td>{{ row[4] }}</td>
+                        <td>{{ row[5] }}</td>
+                        <td>{{ row[6] }}</td>
+                        <td>{{ "%.3f"|format(row[7]) }}</td>
+                        <td>{{ row[8] }}</td>
+                    </tr>
                 {% endfor %}
                 </tbody>
             </table>
         </div>
         {% endif %}
     </div>
-
+</div>
 </body>
 </html>
