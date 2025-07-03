@@ -5,7 +5,7 @@
     <title>Prediksi Kelulusan Mahasiswa</title>
     <style>
         body { font-family: Arial, sans-serif; background: #f0f0f0; }
-        .container { width: 900px; margin: 40px auto; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); padding: 40px; }
+        .container { width: 1000px; margin: 40px auto; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); padding: 40px; }
         .form { margin-bottom: 30px; }
         .form label { font-weight: bold; }
         .form input[type="number"] { width: 100%; padding: 8px; margin: 5px 0 20px; border: 1px solid #ccc; border-radius: 4px; }
@@ -60,6 +60,9 @@
                         <th>Semester 6</th>
                         <th>Semester 7</th>
                         <th>STD DEV IPK</th>
+                        <th>TREND IPK</th>
+                        <th>SLOPE IPK</th>
+                        <th>WEIGHTED AVG IPK</th>
                         <th>Hasil</th>
                     </tr>
                 </thead>
@@ -74,7 +77,10 @@
                         <td>{{ row[5] }}</td>
                         <td>{{ row[6] }}</td>
                         <td>{{ "%.3f"|format(row[7]) }}</td>
-                        <td>{{ row[8] }}</td>
+                        <td>{{ "%.3f"|format(row[8]) }}</td>
+                        <td>{{ "%.3f"|format(row[9]) }}</td>
+                        <td>{{ "%.3f"|format(row[10]) }}</td>
+                        <td>{{ row[11] }}</td>
                     </tr>
                 {% endfor %}
                 </tbody>
