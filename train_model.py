@@ -38,7 +38,7 @@ df['WEIGHTED_AVG_IPK'] = weighted_ipk.sum(axis=1)
 X = df[['SEMESTER 1', 'SEMESTER 2', 'SEMESTER 3', 'SEMESTER 4', 'SEMESTER 5', 'SEMESTER 6', 'SEMESTER 7', 'STDEV_IPK', 'TREND_IPK', 'SLOPE_IPK', 'WEIGHTED_AVG_IPK']]
 y = df['STATUS'].map({'LULUS': 1, 'TIDAK LULUS': 0})
 
-# Memeriksa dan menangani data yang hilang
+
 print("Jumlah nilai hilang per kolom:")
 print(X.isnull().sum())
 if X.isnull().sum().sum() > 0:
