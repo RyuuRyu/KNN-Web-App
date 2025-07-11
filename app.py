@@ -17,6 +17,7 @@ def init_db():
     c.execute('''
         CREATE TABLE IF NOT EXISTS inputs (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nama TEXT,
             semester1 REAL,
             semester2 REAL,
             semester3 REAL,
@@ -39,7 +40,9 @@ init_db()
 @app.route('/', methods=['GET', 'POST'])
 def home():
     prediction = None
+    summary = None
     if request.method == 'POST':
+        nama = request.form['nama']
         semester1 = float(request.form['semester1'])
         semester2 = float(request.form['semester2'])
         semester3 = float(request.form['semester3'])
@@ -65,6 +68,12 @@ def home():
         weights = [0.1, 0.1, 0.1, 0.1, 0.15, 0.2, 0.25]
         weighted_avg = np.dot(ipks, weights)
 
+        summary = { 
+            'stddev': stddev,
+            'trend': trend,
+            'slope': slope
+        }
+
         # Prepare input for prediction (order must match training)
         input_data = pd.DataFrame([[
             semester1, semester2, semester3, semester4, semester5, semester6, semester7,
@@ -85,27 +94,28 @@ def home():
         c = conn.cursor()
         c.execute('''
             INSERT INTO inputs (
-                semester1, semester2, semester3, semester4, semester5, semester6, semester7,
+                nama, semester1, semester2, semester3, semester4, semester5, semester6, semester7,
                 stddev, trend, slope, weighted_avg, prediction
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ''', (semester1, semester2, semester3, semester4, semester5, semester6, semester7,
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (nama, semester1, semester2, semester3, semester4, semester5, semester6, semester7,
               stddev, trend, slope, weighted_avg, status))
         conn.commit()
         conn.close()
-        return redirect(url_for('home'))
+        return render_template('index.html', prediction=prediction, summary=summary)
+    return render_template('index.html', prediction=prediction, summary=summary)
 
-    # Fetch all records for display
+@app.route('/table')
+def table():
     conn = sqlite3.connect(DB_FILE)
     c = conn.cursor()
     c.execute('''
-        SELECT semester1, semester2, semester3, semester4, semester5, semester6, semester7,
-               stddev, trend, slope, weighted_avg, prediction
+        SELECT nama, semester1, semester2, semester3, semester4, semester5, semester6, semester7,
+               weighted_avg, prediction
         FROM inputs
     ''')
     records = c.fetchall()
     conn.close()
-
-    return render_template('index.html', prediction=prediction, records=records)
+    return render_template('table.html', records=records)
 
 if __name__ == '__main__':
     app.run(debug=True)
