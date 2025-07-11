@@ -33,22 +33,38 @@
             padding: 32px; 
         }
 
+        .table-container {
+            max-height: 65vh;
+            overflow-y: auto;
+            width: 100%;
+        }
+
         table { 
             width: 100%; 
             border-collapse: collapse; 
             margin-top: 10px; 
-            background: #fff; 
+            background: #fff;
+            overflow: scroll;
         }
         th, td { 
-            border: 1px solid #e5e7eb; 
-            padding: 15px; 
-            text-align: center; 
+            padding: 12px 15px;
+            border: 1px solid var(--medium-gray);
+            text-align: left;
         }
 
         th { 
             background: #f1f5fb; 
             font-weight: 600; 
             color: #1741a6; 
+            position: sticky;
+            top: 0;
+            background-color: var(--light-gray);
+            z-index: 1;
+            font-weight: 600;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #f8f9fa;
         }
 
         .back-btn { 
@@ -74,7 +90,8 @@
     <div class="container">
         <a href="{{ url_for('index') }}"><button class="back-btn">Kembali ke Form</button></a>
         <h2>Data Mahasiswa</h2>
-        <table>
+        <div class="table-container">
+         <table>
             <thead>
                 <tr>
                     <th>Nama</th>
@@ -105,7 +122,9 @@
                 </tr>
             {% endfor %}
             </tbody>
-        </table>
+        </table>   
+        </div>
+        
     </div>
 </body>
 </html>
