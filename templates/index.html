@@ -201,8 +201,8 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        flex-grow: 1;
         text-align: center;
+        flex-grow: 1;
       }
       .placeholder h2 {
         font-weight: 500;
@@ -289,22 +289,22 @@
       </div>
 
       <div class="result-panel panel">
-
+      
+          <div class="result-header">
+            <h3>Hasil Prediksi</h3>
+            <a href="{{ url_for('table') }}">
+              <button class="history-button">Lihat Riwayat Prediksi</button>
+            </a>
+          </div>
+        
           {% if prediction %}
-            <div class="result-header">
-              <h3>Hasil Prediksi</h3>
-              <a href="{{ url_for('table') }}">
-                <button class="history-button">Lihat Riwayat Prediksi</button>
-              </a>
-            </div>
-          
             <div class="result-body">
               <div class="result-details">
                 <div class="prediction-status">
                   <h2>{{ prediction }}</h2>
                 </div>
                 <p class="prediction-description">
-                  Model KNN berhasil memprediksi kelulusan mahasiswa dengan hasil laporan sebagai berikut:
+                  Kelulusan mahasiswa di prediksi dengan hasil laporan:
                 </p>
                 {% if summary %}
                 <ul class="summary-list">
@@ -314,7 +314,6 @@
                 </ul>
                 {% endif %}
               </div>
-            
               <div class="result-graph">
                 {% if plot_url %}
                 <div class="graph-container">
@@ -333,3 +332,8 @@
               <h2>Masukan Data Mahasiswa untuk Memulai Prediksi</h2>
             </div>
           {% endif %}
+          
+      </div>
+    </div>
+  </body>
+</html>
