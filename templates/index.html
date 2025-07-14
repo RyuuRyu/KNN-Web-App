@@ -37,26 +37,30 @@
         padding: 1rem 2.5rem;
         border-bottom: 1px solid var(--medium-gray);
       }
-      .header-logo {
-        width: 50px;
-        height: 50px;
-        margin-right: 1rem;
-        background-color: var(--primary-blue);
-        border-radius: 50%;
+
+      .right {
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 8px;
-        box-sizing: border-box;
       }
+
       .header-logo img {
-        width: 100%;
-        height: 100%;
-        display: block;
+        width: 75px;
+        height: 75px;
         filter: brightness(0) invert(1); /* Makes a dark icon white */
       }
+
       .header-title {
-        font-size: 2rem;
+        font-size: 1.8rem;
+        font-weight: 600;
+        color: var(--white);
+      }
+
+      .header p {
+        position: absolute;
+        right: 2.5rem;
+        margin: 0;
+        font-size: 1.8rem;
         font-weight: 600;
         color: var(--white);
       }
@@ -138,7 +142,7 @@
         flex: 2;
         display: flex;
         flex-direction: column;
-        min-height: 780px;
+        min-height: 655px;
       }
       .result-panel h3 {
         margin-top: 0;
@@ -225,13 +229,13 @@
   </head>
   <body>
     <div class="header">
-      <div class="header-logo">
-        <img
-          src="https://cdn-icons-png.flaticon.com/512/3135/3135755.png"
-          alt="Logo"
-        />
+      <div class="right">
+        <div class="header-logo">
+        <img src="{{ url_for('static', filename='assets/uca_logo.png') }}" alt="https://cdn-icons-png.flaticon.com/512/3135/3135755.png"/>
+        </div>
+        <span class="header-title">Universitas Cendekia Abditama</span>
       </div>
-      <span class="header-title">Sistem Prediksi Kelulusan</span>
+      <p>Sistem Prediksi Kelulusan</p>
     </div>
 
     <div class="main-container">
@@ -304,7 +308,7 @@
 
         <a href="{{ url_for('table') }}" style="text-decoration: none; margin-top: auto; display: block;">
           <button type="button" class="form-panel-button table-button">
-            Lihat Semua Data
+            Lihat Riwayat Prediksi
           </button>
         </a>
       </div>
