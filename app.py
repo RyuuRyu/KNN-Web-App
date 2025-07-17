@@ -67,11 +67,11 @@ def predict():
     weights = [0.1, 0.1, 0.1, 0.1, 0.15, 0.2, 0.25]
     weighted_avg = np.dot(semester_grades, weights)
     input_data = pd.DataFrame([
-        semester_grades + [stddev, trend, slope, weighted_avg]
+    semester_grades + [stddev, trend, slope, weighted_avg]
     ], columns=[
         'SEMESTER 1', 'SEMESTER 2', 'SEMESTER 3', 'SEMESTER 4',
         'SEMESTER 5', 'SEMESTER 6', 'SEMESTER 7',
-        'STD_DEV_IPK', 'TREND_IPK', 'SLOPE_IPK', 'WEIGHTED_AVG_IPK'
+        'STDEV_IPK', 'TREND_IPK', 'SLOPE_IPK', 'WEIGHTED_AVG_IPK'
     ])
     input_data_scaled = scaler.transform(input_data)
     prediction_result = knn_model.predict(input_data_scaled)
