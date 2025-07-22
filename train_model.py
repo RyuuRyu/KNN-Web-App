@@ -9,6 +9,7 @@ import joblib
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import cross_val_score, StratifiedKFold
 
 # 1. Membaca dataset
 df = pd.read_excel('data/Dataset IPK Mahasiswa.xlsx')
@@ -64,6 +65,13 @@ if len(df) > 1:
     plt.close()
 else:
     print("Data tidak cukup untuk visualisasi histogram.")
+
+cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+knn_cv = KNeighborsClassifier(n_neighbors=5, weights='distance')
+
+cv_scores = cross_val_score(knn_cv, X, y, cv=cv, scoring='accuracy')
+print("\nCross Validation Accuracy per Fold:", cv_scores)
+print("Mean CV Accuracy:", np.mean(cv_scores))
 
 # 4. Membagi data menjadi training dan testing
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
