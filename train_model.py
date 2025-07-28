@@ -80,6 +80,26 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 smote = SMOTE(random_state=42, k_neighbors=1)
 X_train_resampled, y_train_resampled = smote.fit_resample(X_train, y_train)
 
+plt.figure(figsize=(7, 5))
+y_train.value_counts().plot(kind='bar', color=['#2563eb', '#f59e42'])
+plt.title('Distribusi Kelas Sebelum SMOTE')
+plt.xlabel('Status')
+plt.ylabel('Jumlah')
+plt.xticks(ticks=[0,1], labels=['LULUS', 'TIDAK LULUS'], rotation=0)
+plt.tight_layout()
+plt.savefig('image/distribusi_kelas_sebelum_smote.png')
+plt.close()
+
+plt.figure(figsize=(6, 4))
+pd.Series(y_train_resampled).value_counts().plot(kind='bar', color=['#2563eb', '#f59e42'])
+plt.title('Distribusi Kelas Sesudah SMOTE')
+plt.xlabel('Status')
+plt.ylabel('Jumlah')
+plt.xticks(ticks=[0,1], labels=['LULUS', 'TIDAK LULUS'], rotation=0)
+plt.tight_layout()
+plt.savefig('image/distribusi_kelas_sesudah_smote.png')
+plt.close()
+
 print("\nDistribusi Status (Setelah SMOTE - Data Pelatihan):")
 print(pd.Series(y_train_resampled).value_counts())
 
