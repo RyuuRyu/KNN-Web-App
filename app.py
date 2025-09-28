@@ -1,4 +1,7 @@
-from flask import Flask, request, render_template, redirect, url_for
+from flask import Flask, request, render_template, redirect, session, url_for
+from functools import wraps
+from flask_session import Session
+from datetime import timedelta
 import pandas as pd
 import joblib
 import numpy as np
@@ -8,13 +11,20 @@ import base64
 import matplotlib.pyplot as plt
 
 app = Flask(__name__)
+app.secret_key = 'fc15185ac6a4b32d0a3e19cfdcb54945'
+app.config['SESSION_TYPE'] = 'filesystem'
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(seconds=30)  # Session lasts 30 seconds
+Session(app)
 
 knn_model = joblib.load('model/knn_model.pkl')
 scaler = joblib.load('model/scaler.pkl')
-
 DB_FILE = 'data/student_inputs.db'
 
+
+# Database initialization
 def init_db():
+
+    
     conn = sqlite3.connect(DB_FILE)
     c = conn.cursor()
     c.execute('''
@@ -39,8 +49,35 @@ def init_db():
     conn.close()
 
 init_db()
+    
 
+# Login required decorator & Login Route
+@app.route('/login')
+def login():
+    return render_template('login.html')
+
+@app.route('/qr_login', methods=['POST'])
+def qr_login():
+    qr_data = request.form['qr_data']
+    # Validate qr_data (e.g., check against user database)
+    if qr_data == "user1":  # Replace with your validation logic
+        session.permanent = True  # Make session use the lifetime above
+        session['user'] = qr_data
+        return redirect(url_for('index'))
+    return "Invalid QR Code", 401
+
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'user' not in session:
+            return redirect(url_for('login'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+
+# Index Route
 @app.route('/')
+@login_required
 def index():
     return render_template('index.html')
 
@@ -89,6 +126,8 @@ def predict():
     conn.close()
     return redirect(url_for('result', record_id=new_id))
 
+
+# Result Route
 @app.route('/result/<int:record_id>')
 def result(record_id):
     conn = sqlite3.connect(DB_FILE)

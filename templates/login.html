@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>QR Login</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <style>
+      :root {
+        --primary-blue: #2563eb;
+        --primary-blue-dark: #1d4ed8;
+        --light-gray: #f1f5f9;
+        --medium-gray: #e2e8f0;
+        --dark-gray: #334155;
+        --text-color: #0f172a;
+        --white: #ffffff;
+      }
+      body {
+        font-family: "Inter", Arial, sans-serif;
+        background-color: var(--light-gray);
+        color: var(--text-color);
+        margin: 0;
+        padding: 0;
+      }
+      .header {
+        display: flex;
+        align-items: center;
+        background: var(--primary-blue);
+        padding: 0.8rem 2.5rem;
+        border-bottom: 1px solid var(--medium-gray);
+      }
+      .right {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .header-logo img {
+        width: 75px;
+        height: 75px;
+        filter: brightness(0) invert(1);
+      }
+      .header-title {
+        font-size: 1.8rem;
+        font-weight: 600;
+        color: var(--white);
+      }
+      .header p {
+        position: absolute;
+        right: 2.5rem;
+        margin: 0;
+        font-size: 1.8rem;
+        font-weight: 600;
+        color: var(--white);
+      }
+      .main-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 80vh;
+        padding: 2.4rem;
+      }
+      .login-panel {
+        background-color: var(--white);
+        border-radius: 12px;
+        border: 1px solid var(--medium-gray);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        padding: 2.5rem 2rem 2rem 2rem;
+        max-width: 400px;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .login-panel h2 {
+        margin-top: 0;
+        margin-bottom: 1.5rem;
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--dark-gray);
+        text-align: center;
+      }
+      #reader {
+        width: 100%;
+        max-width: 300px;
+        margin-bottom: 1.5rem;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(37, 99, 235, 0.08);
+        background: var(--light-gray);
+      }
+      .login-info {
+        font-size: 1rem;
+        color: var(--text-color);
+        margin-bottom: 1.5rem;
+        text-align: center;
+      }
+      .footer {
+        margin-top: 2rem;
+        text-align: center;
+        color: #94a3b8;
+        font-size: 0.95rem;
+      }
+      @media (max-width: 768px) {
+        .header {
+          padding: 1rem;
+        }
+        .main-container {
+          padding: 1rem;
+        }
+        .login-panel {
+          padding: 1.5rem 0.5rem;
+        }
+      }
+    </style>
+</head>
+<body>
+    <div class="header">
+      <div class="right">
+        <div class="header-logo">
+          <img src="{{ url_for('static', filename='assets/uca_logo.png') }}" alt="Logo"/>
+        </div>
+        <span class="header-title">Universitas Cendekia Abditama</span>
+      </div>
+      <p>Sistem Prediksi Kelulusan</p>
+    </div>
+    <div class="main-container">
+      <div class="login-panel">
+        <h2>Login dengan QR Code</h2>
+        <div class="login-info">
+          Silakan scan QR Code Anda untuk masuk ke sistem.
+        </div>
+        <div id="reader"></div>
+        <form id="qrForm" method="POST" action="{{ url_for('qr_login') }}">
+            <input type="hidden" name="qr_data" id="qr_data">
+        </form>
+        <div class="footer">
+          &copy; {{ 2025 }} KELOMPOK 5 
+        </div>
+      </div>
+    </div>
+    <script>
+        function onScanSuccess(decodedText, decodedResult) {
+            document.getElementById('qr_data').value = decodedText;
+            document.getElementById('qrForm').submit();
+        }
+        let html5QrcodeScanner = new Html5QrcodeScanner(
+            "reader", { fps: 10, qrbox: 250 });
+        html5QrcodeScanner.render(onScanSuccess);
+    </script>
+</body>
+</html>
