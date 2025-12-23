@@ -1,4 +1,4 @@
 backup/
 instance/
 secrets.py
-images/assets
+static/assets
