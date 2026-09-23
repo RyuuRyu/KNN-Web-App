@@ -27,3 +27,5 @@ K-Nearest Neighbors (KNN) is a non-parametric, supervised machine learning algor
 - Go to the project's directory
 - train the model by running the `./train_model.py`
 - After that, run the Web Browser view by running the `app.py`
+
+### NOTE: If you're cloning the branch with the QR-Code login system, then you have to run the `qr_generator.py` to get the QR Code and add a user.
