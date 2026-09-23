@@ -13,6 +13,7 @@ import matplotlib.pyplot as plt
 app = Flask(__name__)
 app.secret_key = 'fc15185ac6a4b32d0a3e19cfdcb54945'
 app.config['SESSION_TYPE'] = 'filesystem'
+app.config['SESSION_FILE_DIR'] = 'session_data'
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(seconds=30)  # Session lasts 30 seconds
 Session(app)
 
