@@ -1,3 +1,7 @@
+import json
+from datetime import datetime
+from pathlib import Path
+
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
@@ -122,3 +126,37 @@ print(classification_report(y_test, y_pred, target_names=['TIDAK LULUS', 'LULUS'
 # 8. Simpan model dan scaler
 joblib.dump(knn, 'model/knn_model.pkl')
 joblib.dump(scaler, 'model/scaler.pkl')
+
+# Simpan hasil training agar dapat dipakai kembali untuk laporan PDF.
+training_report = {
+    'dataset': 'data/Dataset IPK Mahasiswa.xlsx',
+    'total_rows_after_cleaning': int(len(df)),
+    'feature_count': int(X.shape[1]),
+    'features': list(X.columns),
+    'cross_validation_scores': [float(score) for score in cv_scores],
+    'mean_cross_validation_accuracy': float(np.mean(cv_scores)),
+    'test_accuracy': float(accuracy),
+    'classification_report': classification_report(
+        y_test,
+        y_pred,
+        target_names=['TIDAK LULUS', 'LULUS'],
+        output_dict=True,
+    ),
+    'training_class_distribution_before_smote': {
+        str(key): int(value) for key, value in y_train.value_counts().sort_index().items()
+    },
+    'training_class_distribution_after_smote': {
+        str(key): int(value) for key, value in pd.Series(y_train_resampled).value_counts().sort_index().items()
+    },
+    'generated_at': datetime.now().astimezone().isoformat(),
+}
+
+report_path = Path('training_report.json')
+with report_path.open('w', encoding='utf-8') as file:
+    json.dump(training_report, file, indent=2, ensure_ascii=False)
+
+from report import generate_pdf_report
+
+pdf_path = generate_pdf_report(training_report, 'training_report.pdf')
+print(f'JSON training report saved to: {report_path}')
+print(f'PDF training report saved to: {pdf_path}')

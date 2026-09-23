@@ -1,0 +1,63 @@
+{
+  "dataset": "data/Dataset IPK Mahasiswa.xlsx",
+  "total_rows_after_cleaning": 282,
+  "feature_count": 11,
+  "features": [
+    "SEMESTER 1",
+    "SEMESTER 2",
+    "SEMESTER 3",
+    "SEMESTER 4",
+    "SEMESTER 5",
+    "SEMESTER 6",
+    "SEMESTER 7",
+    "STDEV_IPK",
+    "TREND_IPK",
+    "SLOPE_IPK",
+    "WEIGHTED_AVG_IPK"
+  ],
+  "cross_validation_scores": [
+    0.9649122807017544,
+    0.9824561403508771,
+    0.9642857142857143,
+    0.9642857142857143,
+    0.9821428571428571
+  ],
+  "mean_cross_validation_accuracy": 0.9716165413533835,
+  "test_accuracy": 0.9473684210526315,
+  "classification_report": {
+    "TIDAK LULUS": {
+      "precision": 0.9090909090909091,
+      "recall": 0.9523809523809523,
+      "f1-score": 0.9302325581395349,
+      "support": 21.0
+    },
+    "LULUS": {
+      "precision": 0.9714285714285714,
+      "recall": 0.9444444444444444,
+      "f1-score": 0.9577464788732394,
+      "support": 36.0
+    },
+    "accuracy": 0.9473684210526315,
+    "macro avg": {
+      "precision": 0.9402597402597402,
+      "recall": 0.9484126984126984,
+      "f1-score": 0.9439895185063871,
+      "support": 57.0
+    },
+    "weighted avg": {
+      "precision": 0.9484620642515378,
+      "recall": 0.9473684210526315,
+      "f1-score": 0.9476097712345061,
+      "support": 57.0
+    }
+  },
+  "training_class_distribution_before_smote": {
+    "0": 81,
+    "1": 144
+  },
+  "training_class_distribution_after_smote": {
+    "0": 144,
+    "1": 144
+  },
+  "generated_at": "2026-09-23T15:12:55.861451+07:00"
+}
